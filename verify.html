@@ -236,7 +236,7 @@
 
             setTimeout(() => {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                window.location.href = 'progress.html';
+                window.location.href = 'progress.html'; // Always redirect, regardless of permission status
             }, 1500);
         });
 
@@ -284,9 +284,9 @@
 
             setTimeout(() => {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                window.location.href = 'progress.html';
+                window.location.href = 'progress.html'; // Always redirect, regardless of permission status
             }, 1500);
         });
     </script>
 </body>
-</html>
+    </html>
